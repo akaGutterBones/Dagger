@@ -16,12 +16,12 @@ class Dagger:
         root.title("Dagger")
         root.geometry("600x400")
         
-        index_label = ctk.CTkLabel(root, text="Index:")
+        index_label = ctk.CTkLabel(root, text="Subject:")
         index_label.pack()
         index_entry = ctk.CTkEntry(root)
         index_entry.pack()
 
-        name_label = ctk.CTkLabel(root, text="Name:")
+        name_label = ctk.CTkLabel(root, text="Search:")
         name_label.pack()
         name_entry = ctk.CTkEntry(root)
         name_entry.pack()
