@@ -20,7 +20,7 @@ class Dagger:
 
         root = ctk.CTk()
         root.title("Dagger")
-        root.geometry("800x400")
+        root.geometry("600x400")
         
         index_label = ctk.CTkLabel(root, text="Subject:")
         index_label.grid(row=0, column=0, padx=5, pady=5)
