@@ -3,44 +3,40 @@ import pandas as pd
 import tkinter as tk
 import customtkinter as ctk
 from src.fetch import api_call
+from src.dagger_widgets import create_label, create_combobox, create_entry, create_button, create_textbox
 from tkinter import ttk
 class Dagger:
-    def create_window():
+    def __init__(self):
+        self.root = ctk.CTk()
+        self.root.title("Dagger")
+        self.root.geometry("600x400")
+        self.root.grid_rowconfigure(1, weight=1)
+        self.root.grid_columnconfigure(4, weight=1)
+
+    def create_window(self):
         def submit():
             index = index_combobox.get()
             name = name_entry.get()
             result = api_call(index, name)
-            formatted_result = json.dumps(result, indent=4)  # Format the result
-            result_text.delete('1.0', tk.END)  # Clear the existing text
+            formatted_result = json.dumps(result, indent=4)
+            result_text.delete('1.0', tk.END)
             result_text.insert(tk.END, formatted_result)
 
         # Fetch the available endpoints
         response = requests.get('https://www.dnd5eapi.co/api/')
         endpoints = list(response.json().keys())
-
-        root = ctk.CTk()
-        root.title("Dagger")
-        root.geometry("600x400")
         
-        index_label = ctk.CTkLabel(root, text="Subject:")
-        index_label.grid(row=0, column=0, padx=5, pady=5)
-        index_combobox = ttk.Combobox(root, values=endpoints)  # Use the fetched endpoints as values
-        index_combobox.grid(row=0, column=1, padx=5, pady=5)
+        index_label = create_label(self.root, "Subject:", 0, 0)
+        index_combobox = create_combobox(self.root, endpoints, 0, 1)
 
-        name_label = ctk.CTkLabel(root, text="Search:")
-        name_label.grid(row=0, column=2, padx=5, pady=5)
-        name_entry = ctk.CTkEntry(root)
-        name_entry.grid(row=0, column=3, padx=5, pady=5)
+        name_label = create_label(self.root, "Search:", 0, 2)
+        name_entry = create_entry(self.root, 0, 3)
 
-        submit_button = ctk.CTkButton(root, text="Submit", command=submit)
-        submit_button.grid(row=0, column=4, padx=5, pady=5)
+        submit_button = create_button(self.root, "Submit", submit, 0, 4)
 
-        result_text = ctk.CTkTextbox(root, wrap=tk.WORD)  # Wrap text at word boundaries
-        result_text.grid(row=1, column=0, columnspan=5, sticky='nsew')  # Make the text widget expandable
+        result_text = create_textbox(self.root, 1, 0, 5)
 
-        root.grid_rowconfigure(1, weight=1)  # Make the row containing the text widget expandable
-        root.grid_columnconfigure(4, weight=1)
-        root.mainloop()
+        self.root.mainloop()
 
-    if __name__ == "__main__":
-        create_window()
+if __name__ == "__main__":
+    Dagger().create_window()
