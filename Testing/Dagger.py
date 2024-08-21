@@ -2,6 +2,7 @@ import requests, os, sys, json
 import pandas as pd
 import tkinter as tk
 import customtkinter as ctk
+from tabulate import tabulate
 from src.fetch import api_call
 from src.dagger_widgets import create_label, create_combobox, create_entry, create_button, create_textbox
 from tkinter import ttk
@@ -9,7 +10,7 @@ class Dagger:
     def __init__(self):
         self.root = ctk.CTk()
         self.root.title("Dagger")
-        self.root.geometry("600x400")
+        self.root.geometry("800x600")
         self.root.grid_rowconfigure(1, weight=1)
         self.root.grid_columnconfigure(4, weight=1)
 
@@ -17,10 +18,16 @@ class Dagger:
         def submit():
             index = index_combobox.get()
             name = name_entry.get()
-            result = api_call(index, name)
-            formatted_result = json.dumps(result, indent=4)
-            result_text.delete('1.0', tk.END)
-            result_text.insert(tk.END, formatted_result)
+            params = name.split(',')
+            result = api_call(index, *params)
+            result = json.dumps(result) if not isinstance(result, str) else result
+            data = json.loads(result)
+            headers = list(data['results'][0].keys())
+            table_data = [[item[header] for header in headers] for item in data['results']]
+            
+            self.table.delete('1.0', tk.END)
+            for row in table_data:
+                self.table.insert(tk.END, '\t'.join(row) + '\n')
 
         # Fetch the available endpoints
         response = requests.get('https://www.dnd5eapi.co/api/')
@@ -34,7 +41,7 @@ class Dagger:
 
         submit_button = create_button(self.root, "Submit", submit, 0, 4)
 
-        result_text = create_textbox(self.root, 1, 0, 5)
+        self.table = create_textbox(self.root, 1, 0, 5)
 
         self.root.mainloop()
 
