@@ -1,7 +1,6 @@
 import requests, json
 
 def api_call(index, *names):
-    # Join the names with '/' to construct the URL correctly
     name_path = '/'.join(names)
     url = f"https://www.dnd5eapi.co/api/{index}/{name_path}"
     payload = {}
