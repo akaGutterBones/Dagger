@@ -5,6 +5,7 @@ import customtkinter as ctk
 from src.fetch import api_call
 from src.dagger_widgets import create_label, create_combobox, create_entry, create_button, create_textbox
 from tkinter import ttk
+from src.json_utils import flatten_json
 class Dagger:
     def __init__(self):
         self.root = ctk.CTk()
@@ -18,11 +19,11 @@ class Dagger:
             index = index_combobox.get()
             name = name_entry.get()
             result = api_call(index, name)
-            formatted_result = json.dumps(result, indent=4)
+            flattened_result = flatten_json(result)  # Flatten the JSON result
+            formatted_result = json.dumps(flattened_result, indent=4)
             result_text.delete('1.0', tk.END)  # Clear the existing text
             result_text.insert(tk.END, formatted_result)
-
-        # Fetch the available endpoints
+        
         response = requests.get('https://www.dnd5eapi.co/api/')
         endpoints = list(response.json().keys())
         
